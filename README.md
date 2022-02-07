@@ -1,0 +1,1 @@
+# nextJs_redux_storeCreate
