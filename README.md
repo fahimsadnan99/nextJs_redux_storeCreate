@@ -11,37 +11,37 @@
  
  # Store Component
  
- import { createStore, applyMiddleware } from "redux"
-import { createWrapper, HYDRATE } from "next-redux-wrapper"
-import thunkMiddleWare from "redux-thunk"
-import reducers from "./Reducer/reducers";
+    import { createStore, applyMiddleware } from "redux"
+    import { createWrapper, HYDRATE } from "next-redux-wrapper"
+    import thunkMiddleWare from "redux-thunk"
+    import reducers from "./Reducer/reducers";
 
-const bindMiddleware = (middleware) => {
-    if (process.env.NODE_ENV !== 'production') {
-        const { composeWithDevTools } = require('redux-devtools-extension')
-        return composeWithDevTools(applyMiddleware(...middleware))
+    const bindMiddleware = (middleware) => {
+       if (process.env.NODE_ENV !== 'production') {
+           const { composeWithDevTools } = require('redux-devtools-extension')
+           return composeWithDevTools(applyMiddleware(...middleware))
+       }
+
+       return applyMiddleware(...middleware)
     }
 
-    return applyMiddleware(...middleware)
-}
 
+    const reducer = (state, action) => {
+       if (action.type === HYDRATE) {
+           const nextState = {
+               ...state,
+              ...action.payload
+           }
 
-const reducer = (state, action) => {
-    if (action.type === HYDRATE) {
-        const nextState = {
-            ...state,
-           ...action.payload
-        }
-
-        return nextState
-    } else {
-    //reducers is rootReducer Component - Here combine All reducer
-        return reducers(state, action)
+           return nextState
+       } else {
+       //reducers is rootReducer Component - Here combine All reducer
+           return reducers(state, action)
+       }
     }
-}
 
-const initStore = () => {
-    return createStore(reducer,bindMiddleware([thunkMiddleWare]))
-}
+    const initStore = () => {
+       return createStore(reducer,bindMiddleware([thunkMiddleWare]))
+    }
 
-export const wrapper = createWrapper(initStore)
+    export const wrapper = createWrapper(initStore)
